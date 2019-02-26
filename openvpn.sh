@@ -1,6 +1,11 @@
 #!/bin/bash
 
 VPN=$1
+
+
+ROWS=$(tput lines)
+COLS=$(tput cols)
+
 if [ -n "$VPN" ]
 then
   CFG_FILE="/etc/openvpn/client/${VPN}.conf"
@@ -21,14 +26,18 @@ else
   done < <( ls -1 *.conf )
   cd "$CURR_DIR"
 
-  CHOICE=$(dialog --title "VPN selector" --menu "Choose an OpenVPN client configuration file" 24 80 17 "${W[@]}" 3>&2 2>&1 1>&3) # show dialog and store output
-  clear
-
-  if [ -z "$CHOICE" ]
+  if [ "${#W[@]}" -eq "2" ]
   then
-    exit
+    VPN="${W[1]}"
+  else
+    CHOICE=$(dialog --title "VPN selector" --menu "Choose an OpenVPN client configuration file" $(($ROWS -4)) 80 $(($ROWS -8)) "${W[@]}" 3>&2 2>&1 1>&3) # show dialog and store output
+    clear
+    if [ -z "$CHOICE" ]
+    then
+      exit
+    fi
+    VPN="${W[$((($CHOICE -1) *2 +1))]}"
   fi
-  VPN="${W[$((($CHOICE -1) *2 +1))]%}"
 fi
 
 
@@ -37,31 +46,34 @@ SRV_STATE=$(systemctl show -p ActiveState --value "$SERVICE")
 SRV_SUBSTATE=$(systemctl show -p SubState --value "$SERVICE")
 
 
-HEIGHT=15
-WIDTH=80
-CHOICE_HEIGHT=6
 TITLE="VPN helper"
 BACKTITLE="VPN ${VPN} (current status: $SRV_STATE $SRV_SUBSTATE)"
-MENU="Choose one of the following options:"
-
-OPTIONS=(start "Start VPN ${VPN}"
-         status "Show VPN ${VPN} status details"
-         stop "Stop VPN ${VPN}"
+MENU="Choose one of the following actions:"
+OPTIONS=(start  "Start VPN ${VPN}"
+         stop   "Stop  VPN ${VPN}"
          restart "Restart VPN ${VPN}"
+         status "Show status details for VPN ${VPN}"
          quit "Done"
         )
 
 CHOICE=$(dialog --backtitle "$BACKTITLE" \
                 --title "$TITLE" \
                 --menu "$MENU" \
-                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                $(($ROWS -5)) 80 7 \
                 "${OPTIONS[@]}" \
-                3>&2 2>&1 1>&3)
+                3>&2 2>&1 1>&3 >/dev/tty)
 clear
 
 case $CHOICE in
   start | status | stop | restart)
+    echo "Executing:  systemctl $CHOICE ${SERVICE}"
     sudo systemctl $CHOICE "${SERVICE}"
+    if [ $? -eq 0 ]
+    then
+      echo "Result:     done, OK"
+    else
+      echo "Result:     ERROR"
+    fi
     ;;
   quit | "")
     exit
