@@ -11,6 +11,12 @@ you experience that it does not work in this case :'(
 
 That's why you wish a little _help_ for starting and stopping this ~~damned~~ VPN ;)
 
+### How it looks like
+Choice among several VPN configurations (only if there are many files in `/etc/openvpn/client/*.conf`).
+![selection](https://github.com/fabricat/openvpn-service-helper/blob/master/demo-selection.png)
+
+Here is the menu with status (on the top) and actions.
+![actions](https://github.com/fabricat/openvpn-service-helper/blob/master/demo-actions.png)
 
 ### Requirements and limitations
 Currently this script works only with **client** configurations of OpenVPN: 
