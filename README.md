@@ -13,10 +13,10 @@ That's why you wish a little _help_ for starting and stopping this ~~damned~~ VP
 
 ### How it looks like
 Choice among several VPN configurations (only if there are many files in `/etc/openvpn/client/*.conf`).
-![selection](https://github.com/fabricat/openvpn-service-helper/blob/master/demo-selection.png)
+![selection](https://github.com/fabricat/openvpn-service-helper/blob/screenshots/demo-selection.png?raw=true)
 
-Here is the menu with status (on the top) and actions.
-![actions](https://github.com/fabricat/openvpn-service-helper/blob/master/demo-actions.png)
+Here is the menu with **status of the VPN** (on the top) and the possible actions.
+![actions](https://github.com/fabricat/openvpn-service-helper/blob/screenshots/demo-actions.png?raw=true)
 
 ### Requirements and limitations
 Currently this script works only with **client** configurations of OpenVPN: 
@@ -35,7 +35,7 @@ In order to avoid annoyances caused by "sudo with password",
 you can exec `sudo visudo -f /etc/sudoers.d/openvpn` and add the following lines to your configuration:
 ```
 ### Allow client OpenVPN service management
-Cmnd_Alias  OPENVPN = /bin/systemctl start openvpn-client@*, /bin/systemctl status openvpn-client@*, /bin/systemctl stop openvpn-cl$
+Cmnd_Alias  OPENVPN = /bin/systemctl start openvpn-client@*, /bin/systemctl status openvpn-client@*, /bin/systemctl stop openvpn-client@*, /bin/systemctl restart openvpn-client@*
 
 %sudo ALL=(ALL:ALL) NOPASSWD:OPENVPN
 ```
