@@ -24,9 +24,15 @@ it recognizes only config files matching with `/etc/openvpn/client/*.conf`
 
 Moreover, it requires `systemctl` (to manage `openvpn` services) and `dialog` (to show menus).
 
+### Guide
+1. put your OpenVPN configuration file in `/etc/openvpn/client/`
+1. the file name must end with `.conf`: rename it, if necessary
+1. clone or download this repository
+1. execute the script `openvpn.sh`
+
 ### Hint
-In order to avoid interruptions by "sudo with password", 
-you can exec `sudo visudo -f /etc/sudoers.d/openvpn` and add the following configuration:
+In order to avoid annoyances caused by "sudo with password", 
+you can exec `sudo visudo -f /etc/sudoers.d/openvpn` and add the following lines to your configuration:
 ```
 ### Allow client OpenVPN service management
 Cmnd_Alias  OPENVPN = /bin/systemctl start openvpn-client@*, /bin/systemctl status openvpn-client@*, /bin/systemctl stop openvpn-cl$
