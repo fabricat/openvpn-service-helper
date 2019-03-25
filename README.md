@@ -20,7 +20,7 @@ Here is the menu with **status of the VPN** (on the top) and the possible action
 
 ### Requirements and limitations
 Currently this script works only with **client** configurations of OpenVPN: 
-it uses the `openvpn-client@` service template and recognizes only config files matching with `/etc/openvpn/client/*.conf`
+it uses the `openvpn-client@` [service template](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files#creating-instance-units-from-template-unit-files) and recognizes only config files matching with `/etc/openvpn/client/*.conf`
 
 Moreover, it requires `systemctl` (to manage `openvpn` services) and `dialog` (to show menus).
 
