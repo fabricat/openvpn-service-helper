@@ -19,8 +19,12 @@ Here is the menu with **status of the VPN** (on the top) and the possible action
 ![actions](https://github.com/fabricat/openvpn-service-helper/blob/screenshots/demo-actions.png?raw=true)
 
 ### Requirements and limitations
-Currently this script works only with **client** configurations of OpenVPN: 
-it uses the `openvpn-client@` [service template](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files#creating-instance-units-from-template-unit-files) and recognizes only config files matching with `/etc/openvpn/client/*.conf`
+~~Currently this script works only with **client** configurations of OpenVPN: 
+it uses the `openvpn-client@` [service template](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files#creating-instance-units-from-template-unit-files) and recognizes only config files matching with `/etc/openvpn/client/*.conf`~~
+This script works both with **global** and **client** configurations of OpenVPN: 
+it uses the `openvpn@` (or `openvpn-client@`) [service template](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files#creating-instance-units-from-template-unit-files) 
+and recognizes only config files matching with `*.conf` under `/etc/openvpn/`
+ (and sub-directories, except the `server` directory).
 
 Moreover, it requires `systemctl` (to manage `openvpn` services) and `dialog` (to show menus).
 

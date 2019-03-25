@@ -5,27 +5,26 @@ VPN=$1
 
 ROWS=$(tput lines)
 COLS=$(tput cols)
+readonly CFG_PATH='/etc/openvpn/'
 
 if [[ -n "$VPN" ]]
 then
-  CFG_FILE="/etc/openvpn/client/${VPN}.conf"
+  CFG_FILE="${CFG_PATH}${VPN}.conf"
   if [[ ! -f "$CFG_FILE" ]]
   then
     echo "Error: config file $CFG_FILE non found!"
     exit 3
   fi
 else
-  CURR_DIR="$(pwd)"
-  cd /etc/openvpn/client/
-
   let i=0
   FILES=()
   while read -r line
   do # process file by file
     let i=$i+1
-    FILES+=(${i} "${line%.conf}")
-  done < <( ls -1 *.conf )
-  cd "$CURR_DIR"
+
+    line="${line#"${CFG_PATH}"}"
+    FILES+=(${i} "${line%".conf"}")
+  done < <( find "${CFG_PATH}" -path "${CFG_PATH}server" -prune -o -type f -name '*.conf' -print )
 
   if [[ "${#FILES[@]}" -eq "2" ]]
   then
@@ -41,7 +40,12 @@ else
   fi
 fi
 
-SERVICE="openvpn-client@${VPN}.service"
+if [[ "${VPN}" == client/* ]]
+then
+    SERVICE="openvpn-client@${VPN#client/}.service"
+else
+    SERVICE="openvpn@${VPN}.service"
+fi
 
 TITLE="VPN helper"
 MENU="Choose one of the following actions:"
