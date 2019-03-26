@@ -1,10 +1,32 @@
 #!/bin/bash
 
+### ...sorry for the missing usage hints
+
+### Activate debug
+if [[ "$1" == "-d" ]]
+then
+    set -x
+    DEBUG="true"
+    shift
+fi
+
+### Accept explicit VPN config file
 VPN=$1
 
+### End of params
 
-ROWS=$(tput lines)
+
+
 readonly CFG_PATH='/etc/openvpn/'
+ROWS=$(tput lines 2>/dev/null || echo 25)
+
+function clearScreen()
+{
+    if [[ "${DEBUG}" == "true" ]]
+    then
+        clear
+    fi
+}
 
 
 ##############################################
@@ -37,7 +59,7 @@ else
     VPN="${FILES[1]}"
   else
     CHOICE=$(dialog --title "VPN selector" --menu "Choose an OpenVPN client configuration file" $(($ROWS -4)) 80 $(($ROWS -8)) "${FILES[@]}" 3>&2 2>&1 1>&3) # show dialog and store output
-    clear
+    clearScreen
     if [[ -z "$CHOICE" ]]
     then
       exit
@@ -57,13 +79,13 @@ fi
 ###############################################
 ### Phase 2: let's ride the OpenVPN service ###
 ###############################################
-TITLE="VPN helper"
+TITLE="OpenVPN service helper"
 MENU="Choose one of the following actions:"
 OPTIONS=(refresh "Refresh service status (look at the title)"
-         start  "Start VPN ${VPN}"
-         stop   "Stop  VPN ${VPN}"
+         start   "Start   VPN ${VPN}"
+         stop    "Stop    VPN ${VPN}"
          restart "Restart VPN ${VPN}"
-         status "Show status details for VPN ${VPN}"
+         status  "Show service status details"
          quit "Done"
         )
 
@@ -71,7 +93,7 @@ while (true)
 do
     SRV_STATE=$(systemctl show -p ActiveState "$SERVICE")
     SRV_SUBSTATE=$(systemctl show -p SubState "$SERVICE")
-    BACKTITLE="VPN ${VPN} ($SRV_STATE $SRV_SUBSTATE)"
+    BACKTITLE="Service ${SERVICE} ($SRV_STATE $SRV_SUBSTATE)"
 
     CHOICE=$(dialog --backtitle "$BACKTITLE" \
                     --title "$TITLE" \
@@ -79,7 +101,7 @@ do
                     $(($ROWS -5)) 80 7 \
                     "${OPTIONS[@]}" \
                     3>&2 2>&1 1>&3 >/dev/tty)
-    clear
+    clearScreen
 
     case "${CHOICE}" in
       refresh)
