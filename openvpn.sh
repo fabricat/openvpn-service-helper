@@ -6,6 +6,13 @@ VPN=$1
 ROWS=$(tput lines)
 readonly CFG_PATH='/etc/openvpn/'
 
+
+##############################################
+### Phase 1: choose VPN configuration file ###
+##############################################
+VPN="${VPN#"${CFG_PATH}"}"
+VPN="${VPN%".conf"}"
+
 if [[ -n "$VPN" ]]
 then
   CFG_FILE="${CFG_PATH}${VPN}.conf"
@@ -46,6 +53,10 @@ else
     SERVICE="openvpn@${VPN}.service"
 fi
 
+
+###############################################
+### Phase 2: let's ride the OpenVPN service ###
+###############################################
 TITLE="VPN helper"
 MENU="Choose one of the following actions:"
 OPTIONS=(refresh "Refresh service status (look at the title)"
@@ -58,9 +69,9 @@ OPTIONS=(refresh "Refresh service status (look at the title)"
 
 while (true)
 do
-    SRV_STATE=$(systemctl show -p ActiveState --value "$SERVICE")
-    SRV_SUBSTATE=$(systemctl show -p SubState --value "$SERVICE")
-    BACKTITLE="VPN ${VPN} (current status: $SRV_STATE $SRV_SUBSTATE)"
+    SRV_STATE=$(systemctl show -p ActiveState "$SERVICE")
+    SRV_SUBSTATE=$(systemctl show -p SubState "$SERVICE")
+    BACKTITLE="VPN ${VPN} ($SRV_STATE $SRV_SUBSTATE)"
 
     CHOICE=$(dialog --backtitle "$BACKTITLE" \
                     --title "$TITLE" \
