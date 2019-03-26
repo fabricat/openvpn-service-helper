@@ -22,7 +22,7 @@ then
     exit 3
   fi
 else
-  let i=0
+  i=0
   FILES=()
   while read -r line
   do # process file by file
