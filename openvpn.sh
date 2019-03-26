@@ -4,7 +4,6 @@ VPN=$1
 
 
 ROWS=$(tput lines)
-COLS=$(tput cols)
 readonly CFG_PATH='/etc/openvpn/'
 
 if [[ -n "$VPN" ]]
