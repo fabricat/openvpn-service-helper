@@ -18,6 +18,7 @@ VPN=$1
 
 
 readonly CFG_PATH='/etc/openvpn/'
+readonly CFG_EXT='.conf'
 ROWS=$(tput lines 2>/dev/null || echo 25)
 
 function clearScreen()
@@ -33,11 +34,11 @@ function clearScreen()
 ### Phase 1: choose VPN configuration file ###
 ##############################################
 VPN="${VPN#"${CFG_PATH}"}"
-VPN="${VPN%".conf"}"
+VPN="${VPN%"${CFG_EXT}"}"
 
 if [[ -n "$VPN" ]]
 then
-  CFG_FILE="${CFG_PATH}${VPN}.conf"
+  CFG_FILE="${CFG_PATH}${VPN}${CFG_EXT}"
   if [[ ! -f "$CFG_FILE" ]]
   then
     echo "Error: config file $CFG_FILE non found!"
@@ -51,9 +52,14 @@ else
     let i=$i+1
 
     line="${line#"${CFG_PATH}"}"
-    FILES+=(${i} "${line%".conf"}")
-  done < <( find "${CFG_PATH}" -path "${CFG_PATH}server" -prune -o -type f -name '*.conf' -print )
+    FILES+=(${i} "${line%"${CFG_EXT}"}")
+  done < <( find "${CFG_PATH}" -path "${CFG_PATH}server" -prune -o -type f -name "\*${CFG_EXT}" -print )
 
+  if [[ "${#FILES[@]}" -eq "0" ]]
+  then
+    echo "Error: no config file found! (no match: ${CFG_PATH}*${CFG_EXT})"
+    exit 3
+  fi
   if [[ "${#FILES[@]}" -eq "2" ]]
   then
     VPN="${FILES[1]}"
