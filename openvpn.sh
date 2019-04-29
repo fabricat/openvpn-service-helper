@@ -53,11 +53,11 @@ else
 
     line="${line#"${CFG_PATH}"}"
     FILES+=(${i} "${line%"${CFG_EXT}"}")
-  done < <( find "${CFG_PATH}" -path "${CFG_PATH}server" -prune -o -type f -name "\*${CFG_EXT}" -print )
+  done < <( find "${CFG_PATH}" -path "${CFG_PATH}server" -prune -o -type f -name "*${CFG_EXT}" -print )
 
   if [[ "${#FILES[@]}" -eq "0" ]]
   then
-    echo "Error: no config file found! (no match: ${CFG_PATH}*${CFG_EXT})"
+    echo "Error: no config file found! (no match: ${CFG_PATH} ... *${CFG_EXT})"
     exit 3
   fi
   if [[ "${#FILES[@]}" -eq "2" ]]
